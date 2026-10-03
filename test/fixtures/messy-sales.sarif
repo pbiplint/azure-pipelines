@@ -6,7 +6,8 @@
       "tool": {
         "driver": {
           "name": "pbiplint",
-          "version": "0.2.3",
+          "fullName": "pbiplint 0.2.4",
+          "version": "0.2.4",
           "informationUri": "https://pbiplint.com",
           "rules": [
             {

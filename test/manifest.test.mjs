@@ -78,8 +78,25 @@ describe("vss-extension.json", () => {
     ).toBe(true);
   });
 
-  test("stays private until a release makes it public", () => {
-    expect(extension.public).toBe(false);
+  test("is public, with a listing of its own and a privacy policy link", () => {
+    expect(extension.public).toBe(true);
+    expect(extension.content.details.path).toBe("overview.md");
+    expect(existsSync(new URL("../overview.md", import.meta.url))).toBe(true);
+    expect(extension.links.privacypolicy.uri).toBe("https://pbiplint.com/privacy/");
+  });
+
+  test("the listing links only by full URL, since the Marketplace resolves no relative link", () => {
+    const overview = readFileSync(new URL("../overview.md", import.meta.url), "utf8");
+    const links = [...overview.matchAll(/\]\(([^)]+)\)/g)].map((m) => m[1]);
+    expect(links.length).toBeGreaterThan(0);
+    for (const link of links) expect(link).toMatch(/^https:\/\//);
+  });
+
+  test("names Microsoft's products in full", () => {
+    for (const file of ["../overview.md", "../README.md"]) {
+      const text = readFileSync(new URL(file, import.meta.url), "utf8");
+      expect(text).not.toMatch(/\b(AzDO|ADO|VSTS)\b/);
+    }
   });
 
   test("its icon and the task's exist", () => {
@@ -93,8 +110,10 @@ describe("the pinned version and the plain route", () => {
   const plain = readFileSync(new URL("../examples/plain.yml", import.meta.url), "utf8");
   const pinned = taskDefaults().pbiplintVersion;
 
-  test("the README's inputs table and the plain route pin the task's version", () => {
+  test("the README's and the listing's inputs tables and the plain route pin the task's version", () => {
     expect(readme).toContain(`| \`pbiplintVersion\` | \`${pinned}\``);
+    const overview = readFileSync(new URL("../overview.md", import.meta.url), "utf8");
+    expect(overview).toContain(`| \`pbiplintVersion\` | \`${pinned}\``);
     expect(plain).toContain(`PBIPLINT_VERSION: ${pinned}\n`);
     expect(readme).toContain(`PBIPLINT_VERSION: ${pinned}\n`);
   });

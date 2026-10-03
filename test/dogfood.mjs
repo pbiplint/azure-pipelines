@@ -144,7 +144,11 @@ writeFileSync(
 );
 const attack = /##vso\[task\.complete result=Succeeded/i;
 const taskHostile = task("hostile config", {}, hostile);
-check(taskHostile.all.includes("##[vso]task.complete"), "hostile: the CLI quoted the name");
+// The CLI quotes the name, escaped by the task (##[vso]) or, from 0.2.4, by the CLI itself.
+check(
+  taskHostile.all.includes("task.complete result=Succeeded;done=true]"),
+  "hostile: the CLI quoted the name",
+);
 check(!attack.test(taskHostile.all), "hostile: the task let no command through");
 check(taskHostile.failed, "hostile: the task's step failed");
 const plainHostile = plainRoute(hostile);
