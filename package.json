@@ -1,0 +1,26 @@
+{
+  "name": "pbiplint-azure-pipelines",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Azure Pipelines task for pbiplint: lint Power BI projects in a pipeline, with build issues, a run summary, and a SARIF artifact.",
+  "license": "MIT",
+  "author": "McKinley Consulting",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "package": "npx --yes tfx-cli@0.24.2 extension create --manifest-globs vss-extension.json --output-path dist",
+    "dogfood": "node test/dogfood.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.10.0",
+    "prettier": "^3.9.9",
+    "vitest": "^5.0.0"
+  }
+}
