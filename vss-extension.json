@@ -1,0 +1,33 @@
+{
+  "manifestVersion": 1,
+  "id": "pbiplint",
+  "publisher": "pbiplint",
+  "version": "1.0.0",
+  "name": "pbiplint",
+  "description": "Lint Power BI projects in Azure Pipelines: build issues, a run summary, and a SARIF report.",
+  "public": false,
+  "categories": ["Azure Pipelines"],
+  "tags": ["Power BI", "PBIP", "TMDL", "PBIR", "lint", "SARIF"],
+  "targets": [{ "id": "Microsoft.VisualStudio.Services" }],
+  "icons": { "default": "images/extension-icon.png" },
+  "content": {
+    "details": { "path": "README.md" },
+    "license": { "path": "LICENSE" }
+  },
+  "links": {
+    "home": { "uri": "https://pbiplint.com" },
+    "getstarted": { "uri": "https://github.com/pbiplint/azure-pipelines#readme" },
+    "support": { "uri": "https://github.com/pbiplint/azure-pipelines/issues" },
+    "license": { "uri": "https://github.com/pbiplint/azure-pipelines/blob/main/LICENSE" }
+  },
+  "repository": { "type": "git", "uri": "https://github.com/pbiplint/azure-pipelines" },
+  "files": [{ "path": "task" }, { "path": "images", "addressable": true }],
+  "contributions": [
+    {
+      "id": "pbiplint-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": ["ms.vss-distributed-task.tasks"],
+      "properties": { "name": "task" }
+    }
+  ]
+}

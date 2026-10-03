@@ -1,0 +1,96 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "a8e563bb-b691-4c1b-94ef-6a86a0da8432",
+  "name": "pbiplint",
+  "friendlyName": "pbiplint",
+  "description": "Lint Power BI projects: build issues, a run summary, and a SARIF report.",
+  "helpUrl": "https://github.com/pbiplint/azure-pipelines#readme",
+  "helpMarkDown": "Runs [pbiplint](https://pbiplint.com) on a Power BI project, its semantic model and its report. [More](https://github.com/pbiplint/azure-pipelines#readme)",
+  "category": "Test",
+  "author": "McKinley Consulting",
+  "version": { "Major": 1, "Minor": 0, "Patch": 0 },
+  "minimumAgentVersion": "4.248.0",
+  "instanceNameFormat": "pbiplint $(path)",
+  "inputs": [
+    {
+      "name": "path",
+      "type": "string",
+      "label": "Path",
+      "defaultValue": ".",
+      "required": false,
+      "helpMarkDown": "What to lint, relative to the repository: a PBIP folder, a .pbip file, a .SemanticModel or .Report folder, a definition folder, or one .tmdl file."
+    },
+    {
+      "name": "failOn",
+      "type": "pickList",
+      "label": "Fail on",
+      "defaultValue": "error",
+      "required": false,
+      "options": { "error": "error", "warning": "warning", "info": "info", "none": "none" },
+      "helpMarkDown": "Lowest severity that fails the step: error, warning, info, or none."
+    },
+    {
+      "name": "config",
+      "type": "string",
+      "label": "Config file",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A pbiplint.config.json to use. By default the nearest one above the project applies."
+    },
+    {
+      "name": "pbiplintVersion",
+      "type": "string",
+      "label": "pbiplint version",
+      "defaultValue": "0.2.3",
+      "required": false,
+      "helpMarkDown": "The pbiplint CLI version to run, as an npm version spec. Each release of this task pins the current one."
+    },
+    {
+      "name": "annotations",
+      "type": "boolean",
+      "label": "Build issues",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Report findings as build issues with their file and line. The agent shows at most 10 errors and 10 warnings per step; the summary always has every finding."
+    },
+    {
+      "name": "publishSarif",
+      "type": "boolean",
+      "label": "Publish the SARIF report",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Publish the SARIF report as a build artifact, which the SARIF SAST Scans Tab extension shows."
+    },
+    {
+      "name": "artifactName",
+      "type": "string",
+      "label": "Artifact name",
+      "defaultValue": "CodeAnalysisLogs",
+      "required": false,
+      "helpMarkDown": "The artifact the SARIF report goes to. The SARIF SAST Scans Tab reads only CodeAnalysisLogs."
+    },
+    {
+      "name": "sarifCategory",
+      "type": "string",
+      "label": "Report name",
+      "defaultValue": "pbiplint",
+      "required": false,
+      "helpMarkDown": "The name of this step's report files. Give each step its own when one job lints several projects."
+    }
+  ],
+  "outputVariables": [
+    {
+      "name": "exitCode",
+      "description": "pbiplint's exit code: 0 no findings at or above failOn, 1 findings at or above failOn, 2 usage or input error, or pbiplint could not run."
+    },
+    { "name": "sarifFile", "description": "Path of the SARIF report." },
+    { "name": "findings", "description": "Number of findings." },
+    { "name": "errors", "description": "Number of error findings." },
+    { "name": "warnings", "description": "Number of warning findings." },
+    { "name": "infos", "description": "Number of info findings." }
+  ],
+  "execution": {
+    "Node24": { "target": "run.mjs" },
+    "Node20_1": { "target": "run.mjs" }
+  }
+}
