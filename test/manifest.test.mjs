@@ -87,3 +87,23 @@ describe("vss-extension.json", () => {
     expect(existsSync(new URL("../task/icon.png", import.meta.url))).toBe(true);
   });
 });
+
+describe("the pinned version and the plain route", () => {
+  const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
+  const plain = readFileSync(new URL("../examples/plain.yml", import.meta.url), "utf8");
+  const pinned = taskDefaults().pbiplintVersion;
+
+  test("the README's inputs table and the plain route pin the task's version", () => {
+    expect(readme).toContain(`| \`pbiplintVersion\` | \`${pinned}\``);
+    expect(plain).toContain(`PBIPLINT_VERSION: ${pinned}\n`);
+    expect(readme).toContain(`PBIPLINT_VERSION: ${pinned}\n`);
+  });
+
+  test("the README's copy of the plain route has every line of examples/plain.yml's step", () => {
+    const lines = plain
+      .slice(plain.indexOf("steps:"))
+      .split("\n")
+      .filter((l) => l.trim() && !l.trim().startsWith("#"));
+    for (const line of lines) expect(readme).toContain(line);
+  });
+});
