@@ -22,8 +22,11 @@ maintainer with `tfx-cli`. The task's version in `task/task.json`, the extension
    or changes the findings an unchanged project gets is a minor here, since a pipeline gated with
    `failOn` can start failing when `pbiplint@1` moves; any other is a patch. Set it in
    `task/task.json` (`version`), `vss-extension.json`, and `package.json`.
-5. Run `npm test`, open a pull request, let CI pass, merge.
-6. Publish, as below, then tag the merge commit `v1.x.y` and push the tag, so the repository says
+5. If this release changes an input, a permission, or a step, check
+   https://pbiplint.com/pipelines/#azure-pipelines and open a pull request in pbiplint/pbiplint for
+   what changed.
+6. Run `npm test`, open a pull request, let CI pass, merge.
+7. Publish, as below, then tag the merge commit `v1.x.y` and push the tag, so the repository says
    which commit each Marketplace version came from.
 
 ## Publishing
