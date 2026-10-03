@@ -34,6 +34,16 @@ export const showControls = (text) =>
   String(text).replace(CONTROL, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, "0")}`);
 
 /**
+ * `text` with any logging command in it made harmless: `##vso[` becomes `##[vso]`, which reads the
+ * same and does nothing. The agent acts on `##vso[` anywhere in a line, and repository text (a
+ * name the CLI quotes, or one read back from its SARIF) can carry one.
+ */
+export const harmless = (text) => String(text ?? "").replace(/##vso\[/gi, "##[vso]");
+
+/** Repository text as the task writes it to the log: control characters shown, commands harmless. */
+const forLog = (text) => harmless(showControls(text));
+
+/**
  * The agent keeps the first 10 errors and the first 10 warnings of a step as issues and only
  * counts the rest (`_maxIssueCount` in the agent's ExecutionContext.cs).
  */
@@ -54,12 +64,12 @@ export function issues(sarif, { cap = ISSUE_CAP } = {}) {
     const loc = r.locations?.[0]?.physicalLocation;
     out.push({
       type,
-      file: loc ? showControls(decodePath(loc.artifactLocation.uri)) : undefined,
+      file: loc ? forLog(decodePath(loc.artifactLocation.uri)) : undefined,
       line: loc?.region?.startLine,
-      code: showControls(r.ruleId),
+      code: forLog(r.ruleId),
       // The CLI writes "object: rule name (detail)"; the agent puts the file, line, and rule id
       // in front of it, and the rule page goes after.
-      message: showControls(`${r.message?.text ?? ""}${page ? `. ${page}` : ""}`),
+      message: forLog(`${r.message?.text ?? ""}${page ? `. ${page}` : ""}`),
     });
   }
   return out;

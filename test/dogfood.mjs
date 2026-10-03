@@ -154,6 +154,38 @@ check(
 );
 check(plainHostile.status !== 0, "hostile: the plain route's step failed");
 
+// A hostile model: a measure named with a logging command, which reaches the task's own build
+// issues through the SARIF it decodes, and the CLI's output.
+const modelDir = mkdtempSync(join(tmpdir(), "pbiplint-hostile-model-"));
+const model = join(modelDir, "Sales.tmdl");
+writeFileSync(
+  model,
+  [
+    "table Sales",
+    "\tmeasure '##vso[task.complete result=Succeeded;done=true]' = 1",
+    "",
+    "\tcolumn Amount",
+    "\t\tdataType: int64",
+    "\t\tsourceColumn: Amount",
+    "",
+  ].join("\n"),
+);
+const taskModel = task("hostile model", {}, model);
+check(
+  taskModel.lines.some(
+    (l) => l.startsWith("##vso[task.logissue") && l.includes("##[vso]task.complete"),
+  ),
+  "hostile model: a build issue names the measure",
+);
+check(!attack.test(taskModel.all), "hostile model: no command anywhere in the task's output");
+check(taskModel.failed, "hostile model: the task's step failed");
+const plainModel = plainRoute(model);
+check(
+  !attack.test(`${plainModel.stdout}\n${plainModel.stderr}`),
+  "hostile model: the plain route let no command through",
+);
+check(plainModel.status === 1, "hostile model: the plain route's step failed on the finding");
+
 function yamlValue(name) {
   return yaml
     .find((l) => l.trim().startsWith(`${name}:`))

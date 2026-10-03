@@ -9,6 +9,7 @@ import {
   issueCommand,
   issues,
   outputCommands,
+  harmless,
   showControls,
   summary,
   verdict,
@@ -63,13 +64,8 @@ export function findNpx(env, platform, exists = existsSync) {
 
 const NO_NPX = "pbiplint: npx not found. Node.js and npm must be on the PATH of the agent.";
 
-/**
- * The CLI's output, with every logging command in it made harmless. The agent acts on `##vso[`
- * anywhere in a line, on stderr as on stdout, and the CLI quotes text from the repository there:
- * a rule name from its config, a file name. `##[vso]` reads the same and does nothing.
- */
-const harmless = (text) => String(text ?? "").replace(/##vso\[/gi, "##[vso]");
-
+// The CLI's output goes on with any logging command in it made harmless: the agent acts on
+// `##vso[` on stderr as on stdout, and the CLI quotes text from the repository there.
 function passOn(text, write) {
   if (!text) return;
   for (const line of harmless(text)

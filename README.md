@@ -172,7 +172,9 @@ out: build issues for each finding and the output variables, which need the task
 
 Works on the Microsoft-hosted Ubuntu, Windows, and macOS images, which all have Node.js and npm. A
 self-hosted agent needs Node.js 20.19 or later in the 20 line, or 22.12 or later, and npm on the
-PATH, and agent version 4.248.0 or later. A container job needs them in the container. The task script runs on the agent's own Node.js, 24 where the agent offers it and 20
+PATH, and agent version 4.248.0 or later. A container job needs them in the container. npx runs with the agent's environment in the pipeline's working folder, so an `.npmrc` in
+the repository, `NPM_CONFIG_REGISTRY`, and `HTTPS_PROXY` apply as npm reads them; the agent's own
+proxy setting is not passed on, so behind a proxy set `HTTPS_PROXY` on the step. The task script runs on the agent's own Node.js, 24 where the agent offers it and 20
 otherwise; the CLI runs on the Node.js on the PATH through npx. The linter reads only the project
 that `path` names and its `pbiplint.config.json`, or the one `config` names, and makes no network
 calls of its own; the one download is the pinned pbiplint package from npm.

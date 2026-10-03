@@ -137,6 +137,18 @@ describe("issues", () => {
     expect(issue.message).toContain("\\u001b[2J\\u202e\\u000a\\u0009Total");
     expect(issue.file).not.toMatch(RAW_CONTROL);
   });
+
+  test("rewrites a logging command in repository text, which a reader of the SARIF gets raw", () => {
+    const doc = sarif(
+      [RULE],
+      [result("error", "[##vso[task.complete result=Succeeded]]: x", "##VSO[a].tmdl", 1)],
+    );
+    const [issue] = issues(doc);
+    expect(issue.message).toBe(
+      "[##[vso]task.complete result=Succeeded]]: x. https://pbiplint.com/rules/provide-format-string-for-measures",
+    );
+    expect(issue.file).toBe("##[vso]a].tmdl");
+  });
 });
 
 describe("showControls", () => {

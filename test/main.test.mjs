@@ -430,7 +430,7 @@ describe("repository text in the task's own commands", () => {
       code: "R;code=X]",
     });
     expect(issue.data).toBe(
-      "x]; ##vso[task.complete result=Succeeded] 100%AZP25\\u000d\\u000anext",
+      "x]; ##[vso]task.complete result=Succeeded] 100%AZP25\\u000d\\u000anext",
     );
     for (const line of lines.filter((l) => l.includes("##vso["))) {
       expect(line.split("\n")).toHaveLength(1);
