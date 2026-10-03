@@ -1,0 +1,37 @@
+# The pbiplint task on the sample, run in the test organization (see RELEASING.md, "After
+# publishing"): once with the default gate, which must fail on the sample's errors, and once with
+# failOn none, which must pass. A capture of the agent's DNS lookups and outbound connections runs
+# around them.
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: self
+    fetchDepth: 1
+  - bash: bash azure-pipelines/capture-start.sh
+    displayName: Start the egress capture
+  - task: pbiplint@1
+    name: gate
+    displayName: pbiplint (default gate)
+    inputs:
+      path: examples/messy-sales
+  - task: pbiplint@1
+    name: report
+    displayName: pbiplint (report only)
+    condition: always()
+    inputs:
+      path: examples/messy-sales
+      failOn: none
+      sarifCategory: report
+  - bash: |
+      echo "gate: exitCode $(gate.exitCode), $(gate.findings) findings ($(gate.errors) errors, $(gate.warnings) warnings, $(gate.infos) info), $(gate.sarifFile)"
+      echo "report: exitCode $(report.exitCode), $(report.findings) findings"
+    displayName: Output variables
+    condition: always()
+  - bash: bash azure-pipelines/capture-report.sh
+    displayName: Egress record
+    condition: always()

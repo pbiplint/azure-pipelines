@@ -48,11 +48,19 @@ The organization's administrator then installs it from Organization settings, Ex
 
 ## After publishing
 
-Run the test pipeline in the test organization on the new version: the task on the sample project
-gives build issues, the summary on the Extensions tab, the `CodeAnalysisLogs` artifact, and a
-failed step; the same pipeline with `failOn: none` passes. The organization uses the free
-Microsoft-hosted job only, which allows 1,800 minutes a month, so keep the test runs to a few
-minutes each.
+Run the test pipelines in the test organization (dev.azure.com/pbiplint, private project
+`pbiplint-test`) on the new version. Its repository holds the sample (`examples/messy-sales` from
+the main repository at the CLI's release tag) and, under `azure-pipelines/`, the files in
+`test/pipelines/` here. Pipeline "pbiplint task" (`task.yml`) runs the task twice: the default gate
+must fail with build issues, the summary on the Extensions tab, and the `CodeAnalysisLogs`
+artifact, and the `failOn: none` run must pass. Pipeline "pbiplint plain" (`plain.yml`) runs the
+plain YAML route, which must fail on the sample's errors with its summary and artifact. Both print
+the hosts the agent reached, idle and during the run; the run should add nothing but
+`registry.npmjs.org` to the agent's own Azure DevOps hosts. When the sample or these files change,
+push them to that repository first. The organization uses the free Microsoft-hosted job only, which
+allows 1,800 minutes a month, so queue one run of each, a few minutes in all.
+
+First run, October 3, 2026, on 1.0.0 with CLI 0.2.3: both as expected (builds 1 and 2).
 
 ## Going public
 

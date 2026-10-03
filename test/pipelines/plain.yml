@@ -1,0 +1,48 @@
+# examples/plain.yml's step on the sample, run in the test organization, with the same capture
+# of DNS lookups and outbound connections around it. It must fail on the sample's errors.
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: self
+    fetchDepth: 1
+  - bash: bash azure-pipelines/capture-start.sh
+    displayName: Start the egress capture
+  - bash: |
+      set +e # pbiplint's exit code is read below, not acted on
+      out="$AGENT_TEMPDIRECTORY/pbiplint"
+      mkdir -p "$out"
+      rm -f "$out/pbiplint.sarif" "$out/pbiplint.md"
+      args=("$PBIPLINT_PATH" --fail-on "$PBIPLINT_FAIL_ON")
+      # The agent acts on a logging command anywhere in a line of output, and pbiplint quotes text
+      # from the repository (a rule name in its config, a file name), so its output is passed on
+      # with any command in it made harmless.
+      harmless='s/##[vV][sS][oO]\[/##[vso]/g'
+      # The exit code is the verdict; the step exits with it once the reports are out.
+      npx --yes "pbiplint@$PBIPLINT_VERSION" "${args[@]}" --format sarif --output "$out/pbiplint.sarif" 2>&1 | sed "$harmless"
+      code=${PIPESTATUS[0]}
+      # pbiplint writes the SARIF file on every run it completes, so a non-zero exit with none
+      # means it could not run.
+      if [ "$code" -ne 0 ] && [ ! -s "$out/pbiplint.sarif" ]; then code=2; fi
+      if [ "$code" -ne 2 ]; then
+        npx --yes "pbiplint@$PBIPLINT_VERSION" "${args[@]}" --format markdown --output "$out/pbiplint.md" 2>&1 | sed "$harmless"
+        if [ -s "$out/pbiplint.md" ]; then
+          echo "##vso[task.addattachment type=Distributedtask.Core.Summary;name=pbiplint]$out/pbiplint.md"
+        fi
+        echo "##vso[artifact.upload containerfolder=CodeAnalysisLogs;artifactname=CodeAnalysisLogs]$out/pbiplint.sarif"
+      fi
+      exit "$code"
+    displayName: pbiplint
+    # Values reach the script through env, never through $(...) macros inside it, so a path can
+    # never inject shell.
+    env:
+      PBIPLINT_VERSION: 0.2.3
+      PBIPLINT_PATH: examples/messy-sales
+      PBIPLINT_FAIL_ON: error
+  - bash: bash azure-pipelines/capture-report.sh
+    displayName: Egress record
+    condition: always()
