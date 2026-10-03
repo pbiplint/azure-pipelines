@@ -1,0 +1,41 @@
+# pbiplint in Azure Pipelines with no extension to install. Copy this file to azure-pipelines.yml
+# in your repository and set PBIPLINT_PATH below. It runs the pinned pbiplint CLI with npx, puts the
+# Markdown report on the run's Extensions tab, publishes the SARIF report as the CodeAnalysisLogs
+# artifact, and fails the step on findings at or above PBIPLINT_FAIL_ON. The pbiplint task does the
+# same and also reports each finding as a build issue: https://github.com/pbiplint/azure-pipelines
+
+trigger:
+  branches:
+    include: [main]
+# A repository in Azure Repos runs pull request builds through a build validation branch policy;
+# a GitHub repository can add a pr: trigger here.
+
+pool:
+  vmImage: ubuntu-latest # windows-latest works too: the bash step runs in Git Bash there
+
+steps:
+  - bash: |
+      set +e # pbiplint's exit code is read below, not acted on
+      out="$AGENT_TEMPDIRECTORY/pbiplint"
+      mkdir -p "$out"
+      rm -f "$out/pbiplint.sarif" "$out/pbiplint.md"
+      args=("$PBIPLINT_PATH" --fail-on "$PBIPLINT_FAIL_ON")
+      # The exit code is the verdict; the step exits with it once the reports are out.
+      npx --yes "pbiplint@$PBIPLINT_VERSION" "${args[@]}" --format sarif --output "$out/pbiplint.sarif"
+      code=$?
+      # pbiplint writes the SARIF file on every run it completes, so a non-zero exit with none
+      # means it could not run.
+      if [ "$code" -ne 0 ] && [ ! -s "$out/pbiplint.sarif" ]; then code=2; fi
+      if [ "$code" -ne 2 ]; then
+        npx --yes "pbiplint@$PBIPLINT_VERSION" "${args[@]}" --format markdown --output "$out/pbiplint.md"
+        echo "##vso[task.uploadsummary]$out/pbiplint.md"
+        echo "##vso[artifact.upload containerfolder=CodeAnalysisLogs;artifactname=CodeAnalysisLogs]$out/pbiplint.sarif"
+      fi
+      exit "$code"
+    displayName: pbiplint
+    # Values reach the script through env, never through $(...) macros inside it, so a path can
+    # never inject shell.
+    env:
+      PBIPLINT_VERSION: 0.2.3
+      PBIPLINT_PATH: .
+      PBIPLINT_FAIL_ON: error

@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      # The extension must stay packable; the .vsix is not kept.
+      - run: npm run package
+
+  # The task script and the plain YAML route run for real against the messy-sales example from the
+  # main repository, pinned to a commit so the sample cannot change under us, with the agent's
+  # environment set by hand: a missing CLI version, a report without failing, and the default
+  # gate. Windows too, since Power BI shops run Windows agents and the task finds npx differently
+  # there.
+  dogfood:
+    name: dogfood (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check out the sample project
+        uses: actions/checkout@v7
+        with:
+          repository: pbiplint/pbiplint
+          ref: 1fbf8cde0decf16885808120adc8eccd9bd53a87
+          path: sample
+          sparse-checkout: examples/messy-sales
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      # Node cannot spawn /usr/bin/bash on Windows, so name Git Bash by its Windows path.
+      - name: Run the task and the plain route on the sample
+        shell: bash
+        run: |
+          if command -v cygpath >/dev/null; then export PBIPLINT_BASH="$(cygpath -w "$(command -v bash)")"; fi
+          node test/dogfood.mjs sample/examples/messy-sales

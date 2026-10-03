@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # Covers the workflows and the development tools. The pbiplint CLI version is pinned by hand in
+  # task.json, and tfx-cli in package.json's package script; see RELEASING.md.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
