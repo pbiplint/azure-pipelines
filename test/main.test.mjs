@@ -364,3 +364,79 @@ describe("runTask", () => {
     );
   });
 });
+
+/**
+ * A logging command read as the agent reads it (Command.TryParse in azure-pipelines-agent): from
+ * the first `##vso[`, the command name up to a space, properties up to the first `]` split on `;`
+ * and then on the first `=`, and the rest as data; each value unescaped.
+ */
+function parseCommand(line) {
+  const start = line.indexOf("##vso[");
+  const end = line.indexOf("]", start);
+  const head = line.slice(start + 6, end);
+  const space = head.indexOf(" ");
+  const unescape = (s) =>
+    s
+      .replace(/%AZP25/g, "%")
+      .replace(/%0D/g, "\r")
+      .replace(/%0A/g, "\n")
+      .replace(/%5D/g, "]")
+      .replace(/%3B/g, ";");
+  const props = {};
+  for (const pair of (space === -1 ? "" : head.slice(space + 1)).split(";").filter(Boolean)) {
+    const eq = pair.indexOf("=");
+    props[pair.slice(0, eq)] = unescape(pair.slice(eq + 1));
+  }
+  return {
+    name: space === -1 ? head : head.slice(0, space),
+    props,
+    data: unescape(line.slice(end + 1)),
+  };
+}
+
+describe("repository text in the task's own commands", () => {
+  test("a hostile path, rule id, and message cannot end a command early or add to it", () => {
+    const path = "My Model];type=warning;linenumber=1%.SemanticModel/a;b].tmdl";
+    const hostileSarif = JSON.stringify({
+      version: "2.1.0",
+      runs: [
+        {
+          tool: { driver: { name: "pbiplint", rules: [{ id: "R;code=X]" }] } },
+          results: [
+            {
+              ruleId: "R;code=X]",
+              level: "error",
+              message: { text: "x]; ##vso[task.complete result=Succeeded] 100%AZP25\r\nnext" },
+              locations: [
+                {
+                  physicalLocation: {
+                    artifactLocation: { uri: path.split("/").map(encodeURIComponent).join("/") },
+                    region: { startLine: 7 },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    const { lines, folder } = lint({ status: 1, sarif: hostileSarif });
+    const issue = parseCommand(lines.find((l) => l.startsWith("##vso[task.logissue")));
+    expect(issue.name).toBe("task.logissue");
+    expect(issue.props).toEqual({
+      type: "error",
+      sourcepath: path,
+      linenumber: "7",
+      code: "R;code=X]",
+    });
+    expect(issue.data).toBe(
+      "x]; ##vso[task.complete result=Succeeded] 100%AZP25\\u000d\\u000anext",
+    );
+    for (const line of lines.filter((l) => l.includes("##vso["))) {
+      expect(line.split("\n")).toHaveLength(1);
+      expect(line.startsWith("##vso[")).toBe(true);
+    }
+    const sarifUpload = parseCommand(lines.find((l) => l.startsWith("##vso[artifact.upload")));
+    expect(sarifUpload.data).toBe(join(folder, "pbiplint.sarif"));
+  });
+});
