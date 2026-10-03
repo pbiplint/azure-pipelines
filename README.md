@@ -22,8 +22,9 @@ steps:
       path: Sales.pbip
 ```
 
-The task comes from the pbiplint extension on the Visual Studio Marketplace, which an organization
-administrator installs once. If your organization cannot install extensions, use
+The task comes from the
+[pbiplint extension on the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=pbiplint.pbiplint),
+which an organization administrator installs once. If your organization cannot install extensions, use
 [the plain YAML route](#the-plain-yaml-route) below: the same CLI and the same report, with no
 extension.
 
@@ -62,7 +63,7 @@ spelling: a task input name allows no hyphen, so `fail-on` is `failOn` here.
 | `path`            | `.`                | What to lint, relative to the pipeline's working folder (the repository, in a job with one checkout): a PBIP folder, a `.pbip` file, a `.SemanticModel` or `.Report` folder, a `definition` folder, or one `.tmdl` file. |
 | `failOn`          | `error`            | Lowest severity that fails the step: `error`, `warning`, `info`, or `none`.                                                                                   |
 | `config`          |                    | A `pbiplint.config.json` to use. By default the nearest one above the project applies.                                                                        |
-| `pbiplintVersion` | `0.2.3`            | The pbiplint CLI version to run. Each release of this task pins the current one; override to try a newer CLI early.                                           |
+| `pbiplintVersion` | `0.2.4`            | The pbiplint CLI version to run. Each release of this task pins the current one; override to try a newer CLI early.                                           |
 | `annotations`     | `true`             | Report findings as build issues.                                                                                                                              |
 | `publishSarif`    | `true`             | Publish the SARIF report as a build artifact.                                                                                                                 |
 | `artifactName`    | `CodeAnalysisLogs` | The artifact the SARIF report goes to. The SARIF SAST Scans Tab reads only `CodeAnalysisLogs`.                                                                |
@@ -117,7 +118,7 @@ one; it reads every SARIF file in the folder the task writes to:
 ```
 
 It needs pbiplint 0.2.4 or later, the first to write the tool's full name, which the service asks
-for; mind that if you set `pbiplintVersion`. The run's automation details, which name the pipeline,
+for. The task runs 0.2.4 by default; mind it if you set an older `pbiplintVersion`. The run's automation details, which name the pipeline,
 come from the publish step. The SARIF file passes Microsoft's SARIF validator, and its Azure DevOps
 rules ask for nothing more. This setup has not been run against the service itself, since it needs
 the paid add-on; if it does not work for you,
@@ -160,7 +161,7 @@ steps:
       exit "$code"
     displayName: pbiplint
     env:
-      PBIPLINT_VERSION: 0.2.3
+      PBIPLINT_VERSION: 0.2.4
       PBIPLINT_PATH: .
       PBIPLINT_FAIL_ON: error
 ```
