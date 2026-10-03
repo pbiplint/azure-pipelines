@@ -3,8 +3,10 @@
 Lint Power BI projects in Azure Pipelines. One step in your pipeline runs
 [pbiplint](https://pbiplint.com) against the project in your repository, its semantic model and its
 report, and turns the findings into a pass/fail step, build issues with their file and line, a
-readable summary on the run, and a SARIF report. Nothing leaves your organization, as
-[the pbiplint Privacy Promise](https://pbiplint.com/privacy/) says.
+readable summary on the run, and a SARIF report. Nothing from your project leaves your organization,
+and the one request beyond it is the pinned pbiplint download from npm;
+[Pipelines: GitHub Actions and Azure Pipelines](https://pbiplint.com/pipelines/#azure-pipelines)
+lists what each step sends where, and how to check it.
 
 ```yaml
 trigger:
