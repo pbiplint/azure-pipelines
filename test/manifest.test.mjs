@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { outputCommands } from "../task/report.mjs";
-import { inputs, taskDefaults } from "../task/run.mjs";
+import { inputs, taskDefaults } from "../task/main.mjs";
 
 const read = (path) => JSON.parse(readFileSync(new URL(`../${path}`, import.meta.url), "utf8"));
 const task = read("task/task.json");
@@ -12,12 +12,12 @@ const pkg = read("package.json");
 const NAME = /^[A-Za-z][A-Za-z0-9]*$/;
 
 describe("task.json", () => {
-  test("declares exactly the inputs run.mjs reads", () => {
+  test("declares exactly the inputs main.mjs reads", () => {
     const read = Object.keys(inputs({}, taskDefaults()));
     expect(task.inputs.map((i) => i.name).sort()).toEqual(read.sort());
   });
 
-  test("every input has a default run.mjs can use", () => {
+  test("every input has a default main.mjs can use", () => {
     expect(inputs({}, taskDefaults())).toEqual({
       path: ".",
       failOn: "error",
@@ -54,7 +54,7 @@ describe("task.json", () => {
       Node24: { target: "run.mjs" },
       Node20_1: { target: "run.mjs" },
     });
-    expect(existsSync(new URL("../task/run.mjs", import.meta.url))).toBe(true);
+    expect(existsSync(new URL("../task/main.mjs", import.meta.url))).toBe(true);
     expect(task.minimumAgentVersion).toBe("4.248.0");
   });
 });

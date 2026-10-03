@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -27,7 +27,7 @@ const check = (ok, what) => {
 };
 
 /** Runs the task script as the agent would and returns its logging commands and outputs. */
-function task(name, env) {
+function task(name, env, path = sample) {
   const temp = mkdtempSync(join(tmpdir(), "pbiplint-dogfood-"));
   const r = spawnSync(process.execPath, [join(root, "task", "run.mjs")], {
     encoding: "utf8",
@@ -35,7 +35,7 @@ function task(name, env) {
       ...process.env,
       AGENT_TEMPDIRECTORY: temp,
       SYSTEM_DEFAULTWORKINGDIRECTORY: process.cwd(),
-      INPUT_PATH: sample,
+      INPUT_PATH: path,
       ...(version ? { INPUT_PBIPLINTVERSION: version } : {}),
       ...env,
     },
@@ -48,13 +48,16 @@ function task(name, env) {
   const result = {
     status: r.status,
     lines,
+    all: `${r.stdout}\n${r.stderr}`,
     failed: lines.some((l) => l.startsWith("##vso[task.complete result=Failed]")),
     exitCode: output("exitCode"),
     errors: Number(output("errors")),
     warnings: Number(output("warnings")),
     findings: Number(output("findings")),
     issues: lines.filter((l) => l.startsWith("##vso[task.logissue")).length,
-    summary: lines.find((l) => l.startsWith("##vso[task.uploadsummary]"))?.slice(25),
+    summary: lines
+      .find((l) => l.startsWith("##vso[task.addattachment type=Distributedtask.Core.Summary;"))
+      ?.replace(/^.*?\]/, ""),
     artifact: lines.some((l) => l.startsWith("##vso[artifact.upload ")),
   };
   console.log(
@@ -95,29 +98,32 @@ const script = yaml
   .slice(start, end)
   .map((l) => l.slice(6))
   .join("\n");
-const temp = mkdtempSync(join(tmpdir(), "pbiplint-plain-"));
-const scriptFile = join(temp, "plain.sh");
-writeFileSync(scriptFile, `${script}\n`);
-const plain = spawnSync(
-  process.env.PBIPLINT_BASH || "bash",
-  ["--noprofile", "--norc", scriptFile],
-  {
+function plainRoute(path) {
+  const temp = mkdtempSync(join(tmpdir(), "pbiplint-plain-"));
+  const scriptFile = join(temp, "plain.sh");
+  writeFileSync(scriptFile, `${script}\n`);
+  const r = spawnSync(process.env.PBIPLINT_BASH || "bash", ["--noprofile", "--norc", scriptFile], {
     encoding: "utf8",
     env: {
       ...process.env,
       AGENT_TEMPDIRECTORY: temp,
       PBIPLINT_VERSION: version ?? yamlValue("PBIPLINT_VERSION"),
-      PBIPLINT_PATH: sample,
+      PBIPLINT_PATH: path,
       PBIPLINT_FAIL_ON: "error",
     },
-  },
-);
+  });
+  return { ...r, temp };
+}
+const plain = plainRoute(sample);
+const temp = plain.temp;
 console.log(`plain route: exit ${plain.status}`);
 check(plain.status === 1, "plain route: exits 1 on the sample's errors");
 check(existsSync(join(temp, "pbiplint", "pbiplint.sarif")), "plain route: SARIF written");
 check(
   existsSync(join(temp, "pbiplint", "pbiplint.md")) &&
-    plain.stdout.includes("##vso[task.uploadsummary]"),
+    plain.stdout.includes(
+      "##vso[task.addattachment type=Distributedtask.Core.Summary;name=pbiplint]",
+    ),
   "plain route: summary written and uploaded",
 );
 check(
@@ -126,6 +132,27 @@ check(
   ),
   "plain route: SARIF published",
 );
+
+// A hostile repository: its config names a "rule" that is a logging command, which the CLI quotes
+// when it refuses the name. Neither route may let it through.
+const hostileDir = mkdtempSync(join(tmpdir(), "pbiplint-hostile-"));
+const hostile = join(hostileDir, "messy-sales");
+cpSync(sample, hostile, { recursive: true });
+writeFileSync(
+  join(hostile, "pbiplint.config.json"),
+  JSON.stringify({ rules: { "##vso[task.complete result=Succeeded;done=true]": "off" } }),
+);
+const attack = /##vso\[task\.complete result=Succeeded/i;
+const taskHostile = task("hostile config", {}, hostile);
+check(taskHostile.all.includes("##[vso]task.complete"), "hostile: the CLI quoted the name");
+check(!attack.test(taskHostile.all), "hostile: the task let no command through");
+check(taskHostile.failed, "hostile: the task's step failed");
+const plainHostile = plainRoute(hostile);
+check(
+  !attack.test(`${plainHostile.stdout}\n${plainHostile.stderr}`),
+  "hostile: the plain route let no command through",
+);
+check(plainHostile.status !== 0, "hostile: the plain route's step failed");
 
 function yamlValue(name) {
   return yaml

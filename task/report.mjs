@@ -65,27 +65,6 @@ export function issues(sarif, { cap = ISSUE_CAP } = {}) {
   return out;
 }
 
-/**
- * `sarif` with the driver's fullName, which GitHub Advanced Security for Azure DevOps requires and
- * pbiplint does not write (rule GHAzDO1018 of Microsoft's SARIF validator). The run's
- * automationDetails, which the service also requires, is left to AdvancedSecurity-Publish: its id
- * and properties name the pipeline's build definition and phase (GHAzDO1019, GHAzDO1020), which
- * only the publishing step knows. A fullName already there is kept.
- */
-export function forAdvancedSecurity(sarif) {
-  return {
-    ...sarif,
-    runs: (sarif.runs ?? []).map((r) => {
-      const driver = r.tool?.driver ?? {};
-      const fullName = [driver.name ?? "pbiplint", driver.version].filter(Boolean).join(" ");
-      return {
-        ...r,
-        tool: { ...r.tool, driver: { ...driver, fullName: driver.fullName ?? fullName } },
-      };
-    }),
-  };
-}
-
 // Logging commands: https://learn.microsoft.com/azure/devops/pipelines/scripts/logging-commands
 // The escaping is the task library's (taskcommand.ts), percent first so nothing is escaped twice.
 const escapeData = (s) =>

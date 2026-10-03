@@ -7,9 +7,9 @@ npm run lint    # eslint and prettier
 npm run package # build the extension into dist/ with tfx-cli
 ```
 
-The task is `task/task.json` plus `task/run.mjs`, which runs the CLI, and `task/report.mjs`, which
-turns its SARIF report into Azure Pipelines logging commands. Neither has dependencies. The unit
-tests read `test/fixtures/messy-sales.sarif`, the CLI's SARIF output for the main repository's
+The task is `task/task.json` plus three scripts: `task/run.mjs`, the entry; `task/main.mjs`, which
+runs the CLI; and `task/report.mjs`, which turns its SARIF report into Azure Pipelines logging
+commands. None has dependencies. The unit tests read `test/fixtures/messy-sales.sarif`, the CLI's SARIF output for the main repository's
 `examples/messy-sales` at the pinned version. Regenerate it from a checkout of
 https://github.com/pbiplint/pbiplint when the CLI's output changes:
 
@@ -17,7 +17,7 @@ https://github.com/pbiplint/pbiplint when the CLI's output changes:
 npx pbiplint@0.2.3 examples/messy-sales --format sarif --output ../pbiplint-azure-pipelines/test/fixtures/messy-sales.sarif
 ```
 
-Inputs default in `task.json` only; `run.mjs` reads them from there. Input and output variable
+Inputs default in `task.json` only; `main.mjs` reads them from there. Input and output variable
 names take letters and digits only, as the task schema requires.
 
 ## The dogfood run

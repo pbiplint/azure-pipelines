@@ -18,7 +18,7 @@
       "label": "Path",
       "defaultValue": ".",
       "required": false,
-      "helpMarkDown": "What to lint, relative to the repository: a PBIP folder, a .pbip file, a .SemanticModel or .Report folder, a definition folder, or one .tmdl file."
+      "helpMarkDown": "What to lint, relative to the pipeline's working folder (the repository, in a job with one checkout): a PBIP folder, a .pbip file, a .SemanticModel or .Report folder, a definition folder, or one .tmdl file."
     },
     {
       "name": "failOn",

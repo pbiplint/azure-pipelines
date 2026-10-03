@@ -57,7 +57,7 @@ spelling: a task input name allows no hyphen, so `fail-on` is `failOn` here.
 
 | Input             | Default            | What it does                                                                                                                                                  |
 | ----------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `path`            | `.`                | What to lint, relative to the repository: a PBIP folder, a `.pbip` file, a `.SemanticModel` or `.Report` folder, a `definition` folder, or one `.tmdl` file. |
+| `path`            | `.`                | What to lint, relative to the pipeline's working folder (the repository, in a job with one checkout): a PBIP folder, a `.pbip` file, a `.SemanticModel` or `.Report` folder, a `definition` folder, or one `.tmdl` file. |
 | `failOn`          | `error`            | Lowest severity that fails the step: `error`, `warning`, `info`, or `none`.                                                                                   |
 | `config`          |                    | A `pbiplint.config.json` to use. By default the nearest one above the project applies.                                                                        |
 | `pbiplintVersion` | `0.2.3`            | The pbiplint CLI version to run. Each release of this task pins the current one; override to try a newer CLI early.                                           |
@@ -114,11 +114,13 @@ one; it reads every SARIF file in the folder the task writes to:
     SarifsInputDirectory: $(Agent.TempDirectory)/pbiplint
 ```
 
-The task adds the one field the service needs that pbiplint does not write, the tool's full name,
-and leaves the run's automation details, which name the pipeline, to the publish step. The SARIF
-file passes Microsoft's SARIF validator, and its Azure DevOps rules ask for nothing more. This setup
-has not been run against the service itself, since it needs the paid add-on; if it does not work for
-you, [open an issue](https://github.com/pbiplint/azure-pipelines/issues).
+It needs pbiplint 0.2.4 or later, the first to write the tool's full name, which the service asks
+for; mind that if you set `pbiplintVersion`. The run's automation details, which name the pipeline,
+come from the publish step. The SARIF file passes Microsoft's SARIF validator, and its Azure DevOps
+rules ask for nothing more. This setup has not been run against the service itself, since it needs
+the paid add-on; if it does not work for you,
+[open an issue](https://github.com/pbiplint/azure-pipelines/issues). The same step works after the
+plain YAML route below, with `SarifsInputDirectory: $(Agent.TempDirectory)/pbiplint`.
 
 ## The plain YAML route
 
@@ -142,12 +144,15 @@ steps:
       mkdir -p "$out"
       rm -f "$out/pbiplint.sarif" "$out/pbiplint.md"
       args=("$PBIPLINT_PATH" --fail-on "$PBIPLINT_FAIL_ON")
-      npx --yes "pbiplint@$PBIPLINT_VERSION" "${args[@]}" --format sarif --output "$out/pbiplint.sarif"
-      code=$?
+      harmless='s/##[vV][sS][oO]\[/##[vso]/g'
+      npx --yes "pbiplint@$PBIPLINT_VERSION" "${args[@]}" --format sarif --output "$out/pbiplint.sarif" 2>&1 | sed "$harmless"
+      code=${PIPESTATUS[0]}
       if [ "$code" -ne 0 ] && [ ! -s "$out/pbiplint.sarif" ]; then code=2; fi
       if [ "$code" -ne 2 ]; then
-        npx --yes "pbiplint@$PBIPLINT_VERSION" "${args[@]}" --format markdown --output "$out/pbiplint.md"
-        echo "##vso[task.uploadsummary]$out/pbiplint.md"
+        npx --yes "pbiplint@$PBIPLINT_VERSION" "${args[@]}" --format markdown --output "$out/pbiplint.md" 2>&1 | sed "$harmless"
+        if [ -s "$out/pbiplint.md" ]; then
+          echo "##vso[task.addattachment type=Distributedtask.Core.Summary;name=pbiplint]$out/pbiplint.md"
+        fi
         echo "##vso[artifact.upload containerfolder=CodeAnalysisLogs;artifactname=CodeAnalysisLogs]$out/pbiplint.sarif"
       fi
       exit "$code"
@@ -160,24 +165,23 @@ steps:
 
 It runs the pinned CLI, puts the report on the run's Extensions tab, publishes the SARIF report as
 `CodeAnalysisLogs`, and fails the step on findings at or above `PBIPLINT_FAIL_ON`. What it leaves
-out: build issues for each finding, the output variables, and the tool's full name that Advanced
-Security asks for. Those need the task's script. Move `PBIPLINT_VERSION` by hand when pbiplint
-releases.
+out: build issues for each finding and the output variables, which need the task's script. Move
+`PBIPLINT_VERSION` by hand when pbiplint releases.
 
 ## Agents
 
 Works on the Microsoft-hosted Ubuntu, Windows, and macOS images, which all have Node.js and npm. A
-self-hosted agent needs Node.js 20.19 or later and npm on the PATH, and agent version 4.248.0 or
-later. The task script runs on the agent's own Node.js, 24 where the agent offers it and 20
+self-hosted agent needs Node.js 20.19 or later in the 20 line, or 22.12 or later, and npm on the
+PATH, and agent version 4.248.0 or later. A container job needs them in the container. The task script runs on the agent's own Node.js, 24 where the agent offers it and 20
 otherwise; the CLI runs on the Node.js on the PATH through npx. The linter reads only the project
 that `path` names and its `pbiplint.config.json`, or the one `config` names, and makes no network
 calls of its own; the one download is the pinned pbiplint package from npm.
 
 ## How it works
 
-The task is [`task/run.mjs`](task/run.mjs) and [`task/report.mjs`](task/report.mjs), with no
+The task is [`task/main.mjs`](task/main.mjs) and [`task/report.mjs`](task/report.mjs), with no
 dependencies: it runs the published `pbiplint` CLI at the pinned version through npx, with no shell
-in between, then writes Azure Pipelines
+in between, passes the CLI's output on with any logging command in it made harmless, then writes Azure Pipelines
 [logging commands](https://learn.microsoft.com/azure/devops/pipelines/scripts/logging-commands) to
 its output for the build issues, the summary, the artifact, and the result. There is no bundled
 code to audit.

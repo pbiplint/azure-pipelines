@@ -2,7 +2,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "no
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, onTestFinished, test } from "vitest";
-import { findNpx, inputs, main } from "../task/run.mjs";
+import { findNpx, inputs, main, runTask } from "../task/main.mjs";
 
 const SARIF = readFileSync(new URL("./fixtures/messy-sales.sarif", import.meta.url), "utf8");
 
@@ -27,7 +27,15 @@ function tempDir() {
  * Runs main with a stand-in for npx: it records each call and, for the SARIF run, writes `sarif`
  * (unless null) and returns `status`; the Markdown run writes a small report.
  */
-function lint({ env = {}, status = 0, sarif = SARIF, spawnResult, platform = "linux" } = {}) {
+function lint({
+  env = {},
+  status = 0,
+  sarif = SARIF,
+  spawnResult,
+  platform = "linux",
+  childOut = "",
+  childErr = "",
+} = {}) {
   const temp = tempDir();
   const calls = [];
   const lines = [];
@@ -38,17 +46,19 @@ function lint({ env = {}, status = 0, sarif = SARIF, spawnResult, platform = "li
     const format = args[args.indexOf("--format") + 1];
     if (format === "sarif" && sarif !== null) writeFileSync(output, sarif);
     if (format === "markdown") writeFileSync(output, "# pbiplint report\n");
-    return { status };
+    return { status, stdout: childOut, stderr: childErr };
   };
+  const errors = [];
   const code = main({
     env: { AGENT_TEMPDIRECTORY: temp, SYSTEM_DEFAULTWORKINGDIRECTORY: "/repo", ...env },
     platform,
     stdout: (line) => lines.push(line),
+    stderr: (line) => errors.push(line),
     spawn,
     defaults: DEFAULTS,
   });
   const folder = join(temp, "pbiplint");
-  return { code, calls, lines, folder, out: lines.join("\n") };
+  return { code, calls, lines, errors, folder, out: lines.join("\n") };
 }
 
 const logissues = (lines) => lines.filter((l) => l.startsWith("##vso[task.logissue"));
@@ -134,6 +144,16 @@ describe("findNpx", () => {
     );
   });
 
+  test("on Windows, falls back to an npx.exe shim, which Node can spawn, such as Volta's", () => {
+    const found = findNpx(
+      { PATH: "C:/Users/me/AppData/Local/Volta/bin" },
+      "win32",
+      exists(["C:/Users/me/AppData/Local/Volta/bin/npx.exe"]),
+    );
+    expect(found.command.replace(/\\/g, "/")).toBe("C:/Users/me/AppData/Local/Volta/bin/npx.exe");
+    expect(found.prefix).toEqual([]);
+  });
+
   test("on Windows, finds nothing without npm's npx script", () => {
     expect(
       findNpx({ PATH: "C:/tools" }, "win32", exists(["C:/tools/npx.cmd", "C:/tools/node.exe"])),
@@ -167,7 +187,7 @@ describe("main", () => {
     for (const { options } of calls) {
       expect(options.cwd).toBe("/repo");
       expect(options.shell).toBeUndefined();
-      expect(options.stdio).toEqual(["ignore", "inherit", "inherit"]);
+      expect(options.stdio).toEqual(["ignore", "pipe", "pipe"]);
     }
   });
 
@@ -187,7 +207,9 @@ describe("main", () => {
     expect(code).toBe(0);
     expect(logissues(lines)).toHaveLength(20);
     const summaryFile = join(folder, "pbiplint.summary.md");
-    expect(out).toContain(`##vso[task.uploadsummary]${summaryFile}`);
+    expect(out).toContain(
+      `##vso[task.addattachment type=Distributedtask.Core.Summary;name=pbiplint]${summaryFile}`,
+    );
     expect(readFileSync(summaryFile, "utf8")).toMatch(
       /^# pbiplint report\n\nBuild issues on this run show 20 of 266 findings/,
     );
@@ -197,9 +219,6 @@ describe("main", () => {
     expect(out).toContain("##vso[task.setvariable variable=exitCode;isOutput=true]0");
     expect(out).toContain("##vso[task.setvariable variable=findings;isOutput=true]266");
     expect(out).not.toContain("task.complete");
-    const written = JSON.parse(readFileSync(join(folder, "pbiplint.sarif"), "utf8"));
-    expect(written.runs[0].tool.driver.fullName).toMatch(/^pbiplint \d/);
-    expect(written.runs[0].results).toHaveLength(266);
   });
 
   test("findings at or above failOn fail the step after the report is out", () => {
@@ -290,5 +309,58 @@ describe("main", () => {
     });
     expect(code).toBe(2);
     expect(existsSync(join(folder, "pbiplint.md"))).toBe(false);
+  });
+
+  test("passes the CLI's output on with any logging command in it made harmless", () => {
+    // A config can name a rule that does not exist, and the CLI quotes the name on stderr; the
+    // agent reads logging commands on stderr as on stdout.
+    const hostile = 'no rule named "##vso[task.complete result=Succeeded;done=true]"';
+    const { out, errors } = lint({
+      status: 1,
+      childOut: "npm: ##VSO[task.setvariable variable=x]y\n",
+      childErr: `pbiplint: ${hostile}\nsecond line\n`,
+    });
+    expect(out).not.toMatch(/##vso\[task\.complete result=Succeeded/i);
+    expect(out).not.toMatch(/##vso\[task\.setvariable variable=x\]/i);
+    expect(out).toContain("npm: ##[vso]task.setvariable variable=x]y");
+    expect(errors).toContain(
+      'pbiplint: no rule named "##[vso]task.complete result=Succeeded;done=true]"',
+    );
+    expect(errors).toContain("second line");
+    expect(errors.join("\n")).not.toMatch(/##vso\[/i);
+  });
+
+  test("names the summary for the step's report", () => {
+    const { out } = lint({ env: { INPUT_SARIFCATEGORY: "sales" } });
+    expect(out).toMatch(
+      /##vso\[task\.addattachment type=Distributedtask\.Core\.Summary;name=pbiplint sales\]/,
+    );
+  });
+
+  test("npx missing from the PATH says what the agent needs", () => {
+    const error = Object.assign(new Error("spawnSync npx ENOENT"), { code: "ENOENT" });
+    const { code, out } = lint({ spawnResult: { error, status: null } });
+    expect(code).toBe(2);
+    expect(out).toContain("Node.js and npm must be on the PATH");
+  });
+});
+
+describe("runTask", () => {
+  test("fails the step, rather than the agent, when the task itself throws", () => {
+    const temp = tempDir();
+    const lines = [];
+    runTask({
+      env: { AGENT_TEMPDIRECTORY: temp },
+      platform: "linux",
+      stdout: (l) => lines.push(l),
+      stderr: () => {},
+      spawn: () => {
+        throw new Error("boom\nnext");
+      },
+      defaults: DEFAULTS,
+    });
+    expect(lines.at(-1)).toBe(
+      "##vso[task.complete result=Failed]The pbiplint task failed: boom%0Anext",
+    );
   });
 });
