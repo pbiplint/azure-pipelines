@@ -4,6 +4,7 @@ import {
   ISSUE_CAP,
   category,
   command,
+  forAdvancedSecurity,
   countFindings,
   issueCommand,
   issues,
@@ -281,5 +282,29 @@ describe("verdict", () => {
       `##vso[task.logissue type=error]${message}`,
       `##vso[task.complete result=Failed]${message}`,
     ]);
+  });
+});
+
+describe("forAdvancedSecurity", () => {
+  test("adds the tool's full name, which the service requires", () => {
+    const doc = sarif([RULE], []);
+    doc.runs[0].tool.driver.version = "0.2.3";
+    const out = forAdvancedSecurity(doc);
+    expect(out.runs[0].tool.driver.fullName).toBe("pbiplint 0.2.3");
+    expect(doc.runs[0].tool.driver.fullName).toBeUndefined();
+  });
+
+  test("leaves the automation details to AdvancedSecurity-Publish, which knows the pipeline", () => {
+    expect(forAdvancedSecurity(sarif([RULE], [])).runs[0].automationDetails).toBeUndefined();
+  });
+
+  test("keeps a full name the CLI already wrote", () => {
+    const doc = sarif([RULE], []);
+    doc.runs[0].tool.driver.fullName = "pbiplint, the linter";
+    expect(forAdvancedSecurity(doc).runs[0].tool.driver.fullName).toBe("pbiplint, the linter");
+  });
+
+  test("a driver with no version is named alone", () => {
+    expect(forAdvancedSecurity(sarif([], [])).runs[0].tool.driver.fullName).toBe("pbiplint");
   });
 });

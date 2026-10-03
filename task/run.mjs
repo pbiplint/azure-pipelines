@@ -7,6 +7,7 @@ import {
   category,
   command,
   countFindings,
+  forAdvancedSecurity,
   issueCommand,
   issues,
   outputCommands,
@@ -117,6 +118,7 @@ export function main({ env, platform, stdout, spawn = spawnSync, defaults = task
   const sarif = readSarif(sarifFile);
   // With no SARIF to read there is no verdict on the project, whatever the exit code said.
   if (!sarif) exitCode = 2;
+  else writeFileSync(sarifFile, `${JSON.stringify(forAdvancedSecurity(sarif), null, 2)}\n`);
   const counts = sarif ? countFindings(sarif) : { findings: 0, errors: 0, warnings: 0, infos: 0 };
   const list = sarif && input.annotations ? issues(sarif) : [];
   for (const issue of list) stdout(issueCommand(issue));

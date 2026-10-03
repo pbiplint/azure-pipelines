@@ -197,6 +197,9 @@ describe("main", () => {
     expect(out).toContain("##vso[task.setvariable variable=exitCode;isOutput=true]0");
     expect(out).toContain("##vso[task.setvariable variable=findings;isOutput=true]266");
     expect(out).not.toContain("task.complete");
+    const written = JSON.parse(readFileSync(join(folder, "pbiplint.sarif"), "utf8"));
+    expect(written.runs[0].tool.driver.fullName).toMatch(/^pbiplint \d/);
+    expect(written.runs[0].results).toHaveLength(266);
   });
 
   test("findings at or above failOn fail the step after the report is out", () => {
