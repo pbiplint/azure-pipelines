@@ -61,7 +61,8 @@ artifact, and the `failOn: none` run must pass. Pipeline "pbiplint plain" (`plai
 plain YAML route, which must fail on the sample's errors with its summary and artifact. Both print
 the hosts the agent reached, idle and during the run; the run should add nothing but
 `registry.npmjs.org` to the agent's own Azure DevOps hosts. When the sample or these files change,
-push them to that repository first. The organization uses the free Microsoft-hosted job only, which
+push them to that repository first; `test/pipelines/plain.yml` pins the CLI version too, so move it
+with the others. The organization uses the free Microsoft-hosted job only, which
 allows 1,800 minutes a month, so queue one run of each, a few minutes in all.
 
 First run, October 3, 2026, on 1.0.0 with CLI 0.2.3: both as expected (builds 1 and 2).

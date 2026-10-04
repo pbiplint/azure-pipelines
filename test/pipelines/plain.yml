@@ -40,7 +40,7 @@ steps:
     # Values reach the script through env, never through $(...) macros inside it, so a path can
     # never inject shell.
     env:
-      PBIPLINT_VERSION: 0.2.4
+      PBIPLINT_VERSION: 0.2.5
       PBIPLINT_PATH: examples/messy-sales
       PBIPLINT_FAIL_ON: error
   - bash: bash azure-pipelines/capture-report.sh
