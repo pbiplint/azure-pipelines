@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "pbiplint",
   "publisher": "pbiplint",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "name": "pbiplint",
   "description": "Lint Power BI projects in Azure Pipelines: build issues, a run summary, and a SARIF report.",
   "public": true,
