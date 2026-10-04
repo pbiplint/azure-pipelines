@@ -8,8 +8,9 @@ maintainer with `tfx-cli`. The task's version in `task/task.json`, the extension
 ## After a pbiplint CLI release
 
 1. On a branch, change the `pbiplintVersion` default in `task/task.json`, the version in README.md's
-   inputs table, and `PBIPLINT_VERSION` in `examples/plain.yml` and README.md's copy of it. The
-   manifest tests fail until all four match.
+   and overview.md's inputs tables (overview.md is the Marketplace listing), and `PBIPLINT_VERSION`
+   in `examples/plain.yml` and README.md's copy of it. The manifest tests fail until all of them
+   match.
 2. Move the sample pin, the `ref` of the messy-sales checkout in `.github/workflows/ci.yml`, to the
    commit the main repository's release tag points at.
 3. Move the version in CONTRIBUTING.md's fixture command to the new one, then regenerate

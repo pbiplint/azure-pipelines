@@ -14,7 +14,7 @@ commands. None has dependencies. The unit tests read `test/fixtures/messy-sales.
 https://github.com/pbiplint/pbiplint when the CLI's output changes:
 
 ```bash
-npx pbiplint@0.2.4 examples/messy-sales --format sarif --output ../pbiplint-azure-pipelines/test/fixtures/messy-sales.sarif
+npx pbiplint@0.2.5 examples/messy-sales --format sarif --output ../pbiplint-azure-pipelines/test/fixtures/messy-sales.sarif
 ```
 
 Inputs default in `task.json` only; `main.mjs` reads them from there. Input and output variable
@@ -30,7 +30,7 @@ the workspace package instead of npm's):
 ```bash
 node test/dogfood.mjs ../pbiplint/examples/messy-sales
 # against a local build of the CLI: npm pack -w pbiplint in the main repository, then
-PBIPLINT_DOGFOOD_VERSION=file:/path/to/pbiplint-0.2.4.tgz node test/dogfood.mjs ../pbiplint/examples/messy-sales
+PBIPLINT_DOGFOOD_VERSION=file:/path/to/pbiplint-0.2.5.tgz node test/dogfood.mjs ../pbiplint/examples/messy-sales
 ```
 
 What the dogfood cannot show is the agent itself: that it runs the task, shows the build issues and

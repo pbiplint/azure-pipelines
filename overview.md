@@ -43,7 +43,7 @@ severity; the task picks it up.
 | `path`            | `.`                | What to lint, relative to the pipeline's working folder: a PBIP folder, a `.pbip` file, a `.SemanticModel` or `.Report` folder, a `definition` folder, or one `.tmdl` file. |
 | `failOn`          | `error`            | Lowest severity that fails the step: `error`, `warning`, `info`, or `none`.                                                                                   |
 | `config`          |                    | A `pbiplint.config.json` to use. By default the nearest one above the project applies.                                                                        |
-| `pbiplintVersion` | `0.2.4`            | The pbiplint version to run. Each release of this task pins the current one.                                                                                 |
+| `pbiplintVersion` | `0.2.5`            | The pbiplint version to run. Each release of this task pins the current one.                                                                                 |
 | `annotations`     | `true`             | Report findings as build issues.                                                                                                                              |
 | `publishSarif`    | `true`             | Publish the SARIF report as a build artifact.                                                                                                                 |
 | `artifactName`    | `CodeAnalysisLogs` | The artifact the SARIF report goes to. The SARIF SAST Scans Tab reads only `CodeAnalysisLogs`.                                                                |
