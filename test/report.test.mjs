@@ -47,7 +47,7 @@ function result(level, text, uri, line) {
   };
 }
 
-const COUNTS = { findings: 266, errors: 19, warnings: 77, infos: 170 };
+const COUNTS = { findings: 280, errors: 19, warnings: 84, infos: 177 };
 
 describe("countFindings", () => {
   test("counts every result by level", () => {
@@ -218,10 +218,10 @@ describe("outputCommands", () => {
       [
         "##vso[task.setvariable variable=exitCode;isOutput=true]1",
         "##vso[task.setvariable variable=sarifFile;isOutput=true]/t/pbiplint.sarif",
-        "##vso[task.setvariable variable=findings;isOutput=true]266",
+        "##vso[task.setvariable variable=findings;isOutput=true]280",
         "##vso[task.setvariable variable=errors;isOutput=true]19",
-        "##vso[task.setvariable variable=warnings;isOutput=true]77",
-        "##vso[task.setvariable variable=infos;isOutput=true]170",
+        "##vso[task.setvariable variable=warnings;isOutput=true]84",
+        "##vso[task.setvariable variable=infos;isOutput=true]177",
       ],
     );
   });
@@ -230,7 +230,7 @@ describe("outputCommands", () => {
 describe("summary", () => {
   test("adds a line saying how many findings the build issues show", () => {
     expect(summary({ markdown: "# pbiplint report\n", counts: COUNTS, issued: 20 })).toBe(
-      "# pbiplint report\n\nBuild issues on this run show 20 of 266 findings: at most 10 errors and 10 warnings, and no info. The full list is above.\n",
+      "# pbiplint report\n\nBuild issues on this run show 20 of 280 findings: at most 10 errors and 10 warnings, and no info. The full list is above.\n",
     );
   });
 
@@ -280,7 +280,7 @@ describe("verdict", () => {
 
   test("fails the step on findings at or above failOn, and says how to stop it", () => {
     const message =
-      "pbiplint: 19 errors, 77 warnings, 170 info. Findings at or above failOn (error) fail the step; set failOn to none to report without failing.";
+      "pbiplint: 19 errors, 84 warnings, 177 info. Findings at or above failOn (error) fail the step; set failOn to none to report without failing.";
     expect(verdict({ exitCode: 1, counts: COUNTS, failOn: "error" })).toEqual([
       message,
       `##vso[task.complete result=Failed]${message}`,

@@ -211,13 +211,13 @@ describe("main", () => {
       `##vso[task.addattachment type=Distributedtask.Core.Summary;name=pbiplint]${summaryFile}`,
     );
     expect(readFileSync(summaryFile, "utf8")).toMatch(
-      /^# pbiplint report\n\nBuild issues on this run show 20 of 266 findings/,
+      /^# pbiplint report\n\nBuild issues on this run show 20 of 280 findings/,
     );
     expect(out).toContain(
       `##vso[artifact.upload containerfolder=CodeAnalysisLogs;artifactname=CodeAnalysisLogs]${join(folder, "pbiplint.sarif")}`,
     );
     expect(out).toContain("##vso[task.setvariable variable=exitCode;isOutput=true]0");
-    expect(out).toContain("##vso[task.setvariable variable=findings;isOutput=true]266");
+    expect(out).toContain("##vso[task.setvariable variable=findings;isOutput=true]280");
     expect(out).not.toContain("task.complete");
   });
 

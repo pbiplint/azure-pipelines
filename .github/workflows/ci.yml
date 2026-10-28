@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: pbiplint/pbiplint
-          ref: 20cd2598ed6d5c5aa06e6cb391637b858d3d3b4f
+          ref: 87dcc2fe0a54da3cdef8c9cc142ba4c181b36d62
           path: sample
           sparse-checkout: examples/messy-sales
           persist-credentials: false

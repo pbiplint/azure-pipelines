@@ -16,7 +16,7 @@ maintainer with `tfx-cli`. The task's version in `task/task.json`, the extension
 3. Move the version in CONTRIBUTING.md's fixture command to the new one, then regenerate
    `test/fixtures/messy-sales.sarif` with that command from a checkout of the main repository at
    the same commit. Move the tests' pins to what the new file holds: the counts in
-   `test/report.test.mjs` (`COUNTS`, the summary's "20 of N findings") and in `test/run.test.mjs`
+   `test/report.test.mjs` (`COUNTS`, the summary's "20 of N findings") and in `test/main.test.mjs`
    (`findings`, the summary line), and the first issue's file and rule id. The dogfood checks pin no
    count, so a stale fixture fails nothing; this step is easy to miss.
 4. Number the release by what the CLI release does, as the GitHub Action does: one that adds rules
