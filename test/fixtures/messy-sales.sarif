@@ -6,8 +6,8 @@
       "tool": {
         "driver": {
           "name": "pbiplint",
-          "fullName": "pbiplint 0.3.0",
-          "version": "0.3.0",
+          "fullName": "pbiplint 0.3.3",
+          "version": "0.3.3",
           "informationUri": "https://pbiplint.com",
           "rules": [
             {
@@ -1228,7 +1228,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "BROKEN_ACTION_TARGET",
+            "params": {
+              "action": "pageNavigation",
+              "target": "deadpage00000000000000"
+            }
+          }
         },
         {
           "ruleId": "BROKEN_FIELD_REFERENCE",
@@ -1248,7 +1255,20 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "BROKEN_FIELD_REFERENCE",
+            "params": {
+              "field": "'Sales'[Region]",
+              "reason": {
+                "id": "BROKEN_FIELD_REFERENCE.noColumn",
+                "params": {
+                  "column": "Region",
+                  "table": "Sales"
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "OPENING_PAGE_INVALID",
@@ -1268,7 +1288,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "OPENING_PAGE_INVALID.hidden",
+            "params": {
+              "page": "Scratch"
+            }
+          }
         },
         {
           "ruleId": "DAX_COLUMNS_FULLY_QUALIFIED",
@@ -1788,7 +1814,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "AVOID_SHOW_ITEMS_WITH_NO_DATA",
+            "params": {
+              "roles": "Category"
+            }
+          }
         },
         {
           "ruleId": "AVOID_SHOW_ITEMS_WITH_NO_DATA",
@@ -1808,7 +1840,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "AVOID_SHOW_ITEMS_WITH_NO_DATA",
+            "params": {
+              "roles": "Rows"
+            }
+          }
         },
         {
           "ruleId": "ISAVAILABLEINMDX_FALSE_NONATTRIBUTE_COLUMNS",
@@ -1928,7 +1966,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "REDUCE_ADVANCED_FILTERS",
+            "params": {
+              "count": 5,
+              "max": 4
+            }
+          }
         },
         {
           "ruleId": "REDUCE_NUMBER_OF_CALCULATED_COLUMNS",
@@ -1968,7 +2013,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "REDUCE_OBJECTS_WITHIN_VISUALS",
+            "params": {
+              "count": 7,
+              "max": 6
+            }
+          }
         },
         {
           "ruleId": "REDUCE_PAGES",
@@ -1988,7 +2040,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "REDUCE_PAGES",
+            "params": {
+              "count": 11,
+              "max": 10
+            }
+          }
         },
         {
           "ruleId": "REDUCE_TOPN_FILTERS",
@@ -2008,7 +2067,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "REDUCE_TOPN_FILTERS",
+            "params": {
+              "count": 5,
+              "max": 4
+            }
+          }
         },
         {
           "ruleId": "REDUCE_VISUALS_ON_PAGE",
@@ -2028,7 +2094,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "REDUCE_VISUALS_ON_PAGE",
+            "params": {
+              "count": 21,
+              "max": 20
+            }
+          }
         },
         {
           "ruleId": "REMOVE_UNUSED_CUSTOM_VISUALS",
@@ -2048,7 +2121,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "REMOVE_UNUSED_CUSTOM_VISUALS",
+            "params": {
+              "visual": "ChicletSlicer1448559807354"
+            }
+          }
         },
         {
           "ruleId": "SNOWFLAKE_SCHEMA_ARCHITECTURE",
@@ -2089,7 +2168,25 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.stepFinding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Customer'"
+                }
+              },
+              "step": "'Source'",
+              "finding": {
+                "id": "LOCAL_DRIVE_PATH",
+                "params": {
+                  "drive": "C"
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "LOCAL_DRIVE_PATH",
@@ -2110,7 +2207,25 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.stepFinding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Date'"
+                }
+              },
+              "step": "'Source'",
+              "finding": {
+                "id": "LOCAL_DRIVE_PATH",
+                "params": {
+                  "drive": "C"
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "LOCAL_DRIVE_PATH",
@@ -2131,7 +2246,25 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.stepFinding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Employee'"
+                }
+              },
+              "step": "'Source'",
+              "finding": {
+                "id": "LOCAL_DRIVE_PATH",
+                "params": {
+                  "drive": "C"
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "LOCAL_DRIVE_PATH",
@@ -2152,7 +2285,25 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.stepFinding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Product'"
+                }
+              },
+              "step": "'Source'",
+              "finding": {
+                "id": "LOCAL_DRIVE_PATH",
+                "params": {
+                  "drive": "C"
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "LOCAL_DRIVE_PATH",
@@ -2173,7 +2324,25 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.stepFinding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Promotion'"
+                }
+              },
+              "step": "'Source'",
+              "finding": {
+                "id": "LOCAL_DRIVE_PATH",
+                "params": {
+                  "drive": "C"
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "LOCAL_DRIVE_PATH",
@@ -2194,7 +2363,25 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.stepFinding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Sales'"
+                }
+              },
+              "step": "'Source'",
+              "finding": {
+                "id": "LOCAL_DRIVE_PATH",
+                "params": {
+                  "drive": "C"
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "LOCAL_DRIVE_PATH",
@@ -2215,7 +2402,25 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.stepFinding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Store'"
+                }
+              },
+              "step": "'Source'",
+              "finding": {
+                "id": "LOCAL_DRIVE_PATH",
+                "params": {
+                  "drive": "C"
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "BROKEN_BOOKMARK_REFERENCE",
@@ -2235,7 +2440,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "BROKEN_BOOKMARK_REFERENCE.capturedVisual",
+            "params": {
+              "visual": "deadvisual0000000000",
+              "page": "Overview"
+            }
+          }
         },
         {
           "ruleId": "ENSURE_ALTTEXT",
@@ -2255,7 +2467,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "ENSURE_ALTTEXT",
+            "params": {}
+          }
         },
         {
           "ruleId": "TAB_ORDER_FOLLOWS_LAYOUT",
@@ -2275,7 +2491,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "TAB_ORDER_FOLLOWS_LAYOUT.startsAt",
+            "params": {
+              "tabVisual": "\"Total Margin\"",
+              "layoutVisual": "\"Net Sales\""
+            }
+          }
         },
         {
           "ruleId": "USE_THE_DIVIDE_FUNCTION_FOR_DIVISION",
@@ -2395,7 +2618,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "REPORT_LEVEL_MEASURES",
+            "params": {
+              "table": "Sales"
+            }
+          }
         },
         {
           "ruleId": "REPORT_LEVEL_MEASURES",
@@ -2415,7 +2644,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "REPORT_LEVEL_MEASURES",
+            "params": {
+              "table": "Sales"
+            }
+          }
         },
         {
           "ruleId": "DEFAULT_PAGE_NAME",
@@ -2435,7 +2670,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "DEFAULT_PAGE_NAME",
+            "params": {
+              "name": "Page 2",
+              "pattern": "new"
+            }
+          }
         },
         {
           "ruleId": "DEFAULT_PAGE_NAME",
@@ -2455,7 +2697,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "DEFAULT_PAGE_NAME",
+            "params": {
+              "name": "Duplicate of Overview",
+              "pattern": "duplicate"
+            }
+          }
         },
         {
           "ruleId": "VISUAL_OUTSIDE_PAGE",
@@ -2475,7 +2724,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "VISUAL_OUTSIDE_PAGE.right",
+            "params": {
+              "right": 120
+            }
+          }
         },
         {
           "ruleId": "VISUAL_OUTSIDE_PAGE",
@@ -2495,7 +2750,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "VISUAL_OUTSIDE_PAGE.right",
+            "params": {
+              "right": 40
+            }
+          }
         },
         {
           "ruleId": "ACTION_WITHOUT_DESTINATION",
@@ -2515,7 +2776,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "ACTION_WITHOUT_DESTINATION",
+            "params": {
+              "action": "pageNavigation"
+            }
+          }
         },
         {
           "ruleId": "ENSURE_PAGES_DO_NOT_SCROLL_VERTICALLY",
@@ -2535,7 +2802,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "ENSURE_PAGES_DO_NOT_SCROLL_VERTICALLY",
+            "params": {
+              "height": 1080,
+              "max": 720
+            }
+          }
         },
         {
           "ruleId": "ENSURE_THEME_COLOURS",
@@ -2555,7 +2829,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "ENSURE_THEME_COLOURS",
+            "params": {
+              "count": 1
+            }
+          }
         },
         {
           "ruleId": "FILTERS_PANE_STATE",
@@ -2575,7 +2855,15 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "FILTERS_PANE_STATE",
+            "params": {
+              "basis": "saved",
+              "state": "open",
+              "expect": "closed"
+            }
+          }
         },
         {
           "ruleId": "HIDE_TOOLTIP_DRILLTROUGH_PAGES",
@@ -2595,7 +2883,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "HIDE_TOOLTIP_DRILLTROUGH_PAGES",
+            "params": {
+              "kind": "tooltip"
+            }
+          }
         },
         {
           "ruleId": "SLICER_SEARCH_SAVED",
@@ -2615,7 +2909,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "SLICER_SEARCH_SAVED.term",
+            "params": {
+              "term": "spring"
+            }
+          }
         },
         {
           "ruleId": "VISUAL_WITHOUT_FIELDS",
@@ -2635,7 +2935,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "VISUAL_WITHOUT_FIELDS",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2655,7 +2959,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2675,7 +2983,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2695,7 +3007,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2715,7 +3031,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2735,7 +3055,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2755,7 +3079,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2775,7 +3103,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2795,7 +3127,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2815,7 +3151,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2835,7 +3175,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2855,7 +3199,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2875,7 +3223,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2895,7 +3247,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "INTEGER_FORMATTING",
@@ -2915,7 +3271,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "INTEGER_FORMATTING.none",
+            "params": {}
+          }
         },
         {
           "ruleId": "HIDE_FOREIGN_KEYS",
@@ -5155,7 +5515,15 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.referencedOnly",
+            "params": {
+              "referrers": [
+                "[Sales YoY %]"
+              ]
+            }
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5175,7 +5543,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5195,7 +5567,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5215,7 +5591,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5235,7 +5615,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5255,7 +5639,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5275,7 +5663,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5295,7 +5687,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5315,7 +5711,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5335,7 +5735,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5355,7 +5759,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5375,7 +5783,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5395,7 +5807,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5415,7 +5831,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5435,7 +5855,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5455,7 +5879,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5475,7 +5903,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5495,7 +5927,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5515,7 +5951,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5535,7 +5975,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5555,7 +5999,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5575,7 +6023,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5595,7 +6047,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5615,7 +6071,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5635,7 +6095,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5655,7 +6119,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5675,7 +6143,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5695,7 +6167,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5715,7 +6191,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5735,7 +6215,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5755,7 +6239,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5775,7 +6263,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5795,7 +6287,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5815,7 +6311,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5835,7 +6335,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5855,7 +6359,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5875,7 +6383,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "NOT_REACHED_FROM_REPORT",
@@ -5895,7 +6407,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "NOT_REACHED_FROM_REPORT.nothingReaches",
+            "params": {}
+          }
         },
         {
           "ruleId": "DEFAULT_STEP_NAMES",
@@ -5916,7 +6432,28 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.finding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Customer'"
+                }
+              },
+              "finding": {
+                "id": "DEFAULT_STEP_NAMES.several",
+                "params": {
+                  "count": 2,
+                  "steps": [
+                    "'Promoted Headers'",
+                    "'Changed Type'"
+                  ]
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "DEFAULT_STEP_NAMES",
@@ -5937,7 +6474,28 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.finding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Date'"
+                }
+              },
+              "finding": {
+                "id": "DEFAULT_STEP_NAMES.several",
+                "params": {
+                  "count": 2,
+                  "steps": [
+                    "'Promoted Headers'",
+                    "'Changed Type'"
+                  ]
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "DEFAULT_STEP_NAMES",
@@ -5958,7 +6516,28 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.finding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Employee'"
+                }
+              },
+              "finding": {
+                "id": "DEFAULT_STEP_NAMES.several",
+                "params": {
+                  "count": 2,
+                  "steps": [
+                    "'Promoted Headers'",
+                    "'Changed Type'"
+                  ]
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "DEFAULT_STEP_NAMES",
@@ -5979,7 +6558,28 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.finding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Product'"
+                }
+              },
+              "finding": {
+                "id": "DEFAULT_STEP_NAMES.several",
+                "params": {
+                  "count": 2,
+                  "steps": [
+                    "'Promoted Headers'",
+                    "'Changed Type'"
+                  ]
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "DEFAULT_STEP_NAMES",
@@ -6000,7 +6600,28 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.finding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Promotion'"
+                }
+              },
+              "finding": {
+                "id": "DEFAULT_STEP_NAMES.several",
+                "params": {
+                  "count": 2,
+                  "steps": [
+                    "'Promoted Headers'",
+                    "'Changed Type'"
+                  ]
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "DEFAULT_STEP_NAMES",
@@ -6021,7 +6642,28 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.finding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Sales'"
+                }
+              },
+              "finding": {
+                "id": "DEFAULT_STEP_NAMES.several",
+                "params": {
+                  "count": 2,
+                  "steps": [
+                    "'Promoted Headers'",
+                    "'Changed Type'"
+                  ]
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "DEFAULT_STEP_NAMES",
@@ -6042,7 +6684,28 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "query.finding",
+            "params": {
+              "query": {
+                "id": "query.name",
+                "params": {
+                  "query": "'Store'"
+                }
+              },
+              "finding": {
+                "id": "DEFAULT_STEP_NAMES.several",
+                "params": {
+                  "count": 2,
+                  "steps": [
+                    "'Promoted Headers'",
+                    "'Changed Type'"
+                  ]
+                }
+              }
+            }
+          }
         },
         {
           "ruleId": "HIDDEN_VISUAL_WITH_FIELDS",
@@ -6062,7 +6725,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "HIDDEN_VISUAL_WITH_FIELDS.visualHidden",
+            "params": {
+              "count": 6
+            }
+          }
         },
         {
           "ruleId": "HIDDEN_VISUAL_WITH_FIELDS",
@@ -6082,7 +6751,13 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "HIDDEN_VISUAL_WITH_FIELDS.visualHidden",
+            "params": {
+              "count": 2
+            }
+          }
         },
         {
           "ruleId": "HIDDEN_VISUAL_WITH_FIELDS",
@@ -6102,7 +6777,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "HIDDEN_VISUAL_WITH_FIELDS.groupHidden",
+            "params": {
+              "count": 1,
+              "group": "Group \"Employee details\""
+            }
+          }
         },
         {
           "ruleId": "HIDDEN_VISUAL_WITH_FIELDS",
@@ -6122,7 +6804,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "HIDDEN_VISUAL_WITH_FIELDS.groupHidden",
+            "params": {
+              "count": 2,
+              "group": "Group \"Employee details\""
+            }
+          }
         },
         {
           "ruleId": "ENSURE_TABLES_HAVE_RELATIONSHIPS",
@@ -6182,7 +6871,22 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "HARDCODED_YEAR_IN_FILTER.onField",
+            "params": {
+              "kept": {
+                "id": "HARDCODED_YEAR_IN_FILTER.fixedYears",
+                "params": {
+                  "count": 1,
+                  "years": [
+                    "2025"
+                  ]
+                }
+              },
+              "field": "'Date'[Year]"
+            }
+          }
         },
         {
           "ruleId": "LANDING_PAGE_NOT_SET",
@@ -6202,7 +6906,14 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "LANDING_PAGE_NOT_SET.opensOn",
+            "params": {
+              "page": "Scratch",
+              "by": "active"
+            }
+          }
         },
         {
           "ruleId": "SLICER_SELECTION_SAVED",
@@ -6222,7 +6933,11 @@
                 }
               }
             }
-          ]
+          ],
+          "properties": {
+            "messageId": "SLICER_SELECTION_SAVED",
+            "params": {}
+          }
         },
         {
           "ruleId": "DECIMAL_COLUMN_WITHOUT_FORMAT_STRING",
