@@ -48,16 +48,22 @@ The rules are the ones pbiplint runs everywhere. The semantic model is checked a
 best-practice ruleset, ported and verified, and pbiplint's own rules for a year or a date fixed in
 DAX, for DAX user-defined functions, for translations, and for decimal columns' format strings. The
 report, in the PBIR format, is checked against the 11 base rules of PBI Inspector, ported, and
-pbiplint's own rules for a report's correctness and readiness and for the model objects the report
-never reaches. pbiplint 0.3.0 adds the Power Query layer: it reads the model's M with Microsoft's
-own Power Query parser and checks it with 15 new rules, for 122 rules in all. Every rule has a page
+pbiplint's own rules for a report's correctness and readiness, for text with too little contrast,
+and for the model objects the report never reaches. pbiplint 0.3.0 adds the Power Query layer: it
+reads the model's M with Microsoft's own Power Query parser and checks it with 15 new rules, for 123
+rules in all with 0.3.4's contrast rule. Every rule has a page
 at https://pbiplint.com/rules with what it checks, why, and how to fix it. Configure rules with a
 `pbiplint.config.json` next to your project, as on the command line; the task picks it up.
 
 ### What can newly fail a step
 
-Version 1.4.0 of the task runs pbiplint 0.3.3. Next to 1.3.0, which ran pbiplint 0.3.0, a few
-findings change, each a fix, and a crafted Power Query query can no longer stall or end a run; the
+Version 1.5.0 of the task runs pbiplint 0.3.4. Next to 1.4.0, it adds a rule for report text with
+too little contrast (`LOW_TEXT_CONTRAST`), a warning, so it does not fail a step at the default
+`failOn: error`; a theme file that `report.json` names and that does not parse is now a
+`PARSE_ISSUE` error, which does. The
+[0.3.4 release notes](https://github.com/pbiplint/pbiplint/releases/tag/v0.3.4) say more.
+
+Next to 1.3.0, which ran pbiplint 0.3.0, a few findings also change, each a fix, and a crafted Power Query query can no longer stall or end a run; the
 [0.3.2](https://github.com/pbiplint/pbiplint/releases/tag/v0.3.2) and
 [0.3.3](https://github.com/pbiplint/pbiplint/releases/tag/v0.3.3) release notes list each change.
 
@@ -82,7 +88,7 @@ spelling: a task input name allows no hyphen, so `fail-on` is `failOn` here.
 | `path`            | `.`                | What to lint, relative to the pipeline's working folder (the repository, in a job with one checkout): a PBIP folder or a folder of several, a `.pbip` file, a `.SemanticModel` or `.Report` folder, a `definition` folder, or one `.tmdl` file. |
 | `failOn`          | `error`            | Lowest severity that fails the step: `error`, `warning`, `info`, or `none`.                                                                                   |
 | `config`          |                    | A `pbiplint.config.json` to use. By default the nearest one above the project applies.                                                                        |
-| `pbiplintVersion` | `0.3.3`            | The pbiplint CLI version to run. Each release of this task pins the current one; override to try a newer CLI early.                                           |
+| `pbiplintVersion` | `0.3.4`            | The pbiplint CLI version to run. Each release of this task pins the current one; override to try a newer CLI early.                                           |
 | `annotations`     | `true`             | Report findings as build issues.                                                                                                                              |
 | `publishSarif`    | `true`             | Publish the SARIF report as a build artifact.                                                                                                                 |
 | `artifactName`    | `CodeAnalysisLogs` | The artifact the SARIF report goes to. The SARIF SAST Scans Tab reads only `CodeAnalysisLogs`.                                                                |
@@ -154,7 +160,7 @@ one; it reads every SARIF file in the folder the task writes to:
 ```
 
 It needs pbiplint 0.2.4 or later, the first to write the tool's full name, which the service asks
-for. The task runs 0.3.3 by default; mind it if you set an older `pbiplintVersion`. The run's automation details, which name the pipeline,
+for. The task runs 0.3.4 by default; mind it if you set an older `pbiplintVersion`. The run's automation details, which name the pipeline,
 come from the publish step. The SARIF file passes Microsoft's SARIF validator, and its Azure DevOps
 rules ask for nothing more. This setup has not been run against the service itself, since it needs
 the paid add-on; if it does not work for you,
@@ -197,7 +203,7 @@ steps:
       exit "$code"
     displayName: pbiplint
     env:
-      PBIPLINT_VERSION: 0.3.3
+      PBIPLINT_VERSION: 0.3.4
       PBIPLINT_PATH: .
       PBIPLINT_FAIL_ON: error
 ```
