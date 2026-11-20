@@ -14,7 +14,7 @@ commands. None has dependencies. The unit tests read `test/fixtures/messy-sales.
 https://github.com/pbiplint/pbiplint when the CLI's output changes:
 
 ```bash
-npx pbiplint@0.3.3 examples/messy-sales --format sarif --output ../pbiplint-azure-pipelines/test/fixtures/messy-sales.sarif
+npx pbiplint@0.3.4 examples/messy-sales --format sarif --output ../pbiplint-azure-pipelines/test/fixtures/messy-sales.sarif
 ```
 
 Inputs default in `task.json` only; `main.mjs` reads them from there. Input and output variable
